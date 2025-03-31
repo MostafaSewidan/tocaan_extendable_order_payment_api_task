@@ -8,8 +8,8 @@ This Laravel-based API provides order and payment management functionality with 
 ### Docker Setup (Recommended)
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/MostafaSewidan/tocaan_extendable_order_payment_api_task.git
+   cd tocaan_extendable_order_payment_api_task
    ```
 2. Run the following commands:
    ```bash

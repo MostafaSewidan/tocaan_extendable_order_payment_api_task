@@ -1,0 +1,76 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: extendable_order_payment_api_task
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=extendable_order_payment_api_task
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - mysql
+      - redis
+
+  webserver:
+    image: nginx:alpine
+    container_name: laravel_webserver
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: extendable_order_payment_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: extendable_order_payment_api_task
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:alpine
+    container_name: laravel_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  artisan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_artisan
+    depends_on:
+      - mysql
+      - redis
+    working_dir: /var/www
+    entrypoint: [ 'php', '/var/www/artisan' ]
+    volumes:
+      - .:/var/www
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_queue
+    depends_on:
+      - mysql
+      - redis
+    working_dir: /var/www
+    entrypoint: [ 'php', '/var/www/artisan', 'queue:work' ]
+    volumes:
+      - .:/var/www
