@@ -117,6 +117,7 @@ php artisan test
 
 ## Project Structure
 Key directories:
+- `App/Services/Api` - Contains Api implementations.
 - `App/Services/Payments` - Contains payment gateway implementations.
 - `App/DTO/Payment` - Data transfer objects for payment responses.
 - `App/Enums` - Status enumerations.
