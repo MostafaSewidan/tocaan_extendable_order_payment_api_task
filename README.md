@@ -1,5 +1,8 @@
 # Order and Payment Management API
 
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2-blue.svg)](https://php.net)
+
 ## Overview
 This Laravel-based API provides order and payment management functionality with a focus on clean code principles and extensibility. The system allows for easy integration of new payment gateways using the strategy pattern.
 
@@ -8,8 +11,8 @@ This Laravel-based API provides order and payment management functionality with 
 ### Docker Setup (Recommended)
 1. Clone the repository:
    ```bash
-   git clone https://github.com/MostafaSewidan/tocaan_extendable_order_payment_api_task.git
-   cd tocaan_extendable_order_payment_api_task
+   git clone <repository-url>
+   cd <repository-folder>
    ```
 2. Run the following commands:
    ```bash
@@ -26,7 +29,7 @@ This Laravel-based API provides order and payment management functionality with 
    git clone <repository-url>
    cd <repository-folder>
    ```
-2. Ensure you have PHP 8.2 and Composer installed.
+2. Ensure you have PHP 8.2 or higher and Composer installed.
 3. Run the following commands:
    ```bash
    composer install
@@ -51,8 +54,8 @@ The system is designed to easily accommodate new payment gateways with minimal c
 ### Adding a New Payment Gateway
 1. Create a new service class in `App\Services\Payments` that implements `OrderPaymentInterface`.
 2. Implement the required methods:
-   - `checkout()`: Handles the initial payment request.
-   - `callBack()`: Processes the payment callback.
+   - `checkout()`: Handles the initial payment request and return the object of DTO `App\DTO\Payment\CheckoutResponse`.
+   - `callBack()`: Processes the payment callback and return the object of DTO `App\DTO\Payment\CallBackResponse`.
 3. Update the `getGateway()` method in `PaymentService.php` to include your new gateway:
    ```php
    return match ($paymentType) {
@@ -61,6 +64,12 @@ The system is designed to easily accommodate new payment gateways with minimal c
        default => throw new HttpException(400, 'Invalid payment type'),
    };
    ```
+4. use the gateway like this Ex :
+    ```php
+        use App\Services\Payments\PaymentService;
+        
+        PaymentService::getGateway("PAYMENT_METHOD")->checkout($order);
+    ```
 
 ### Example Gateway Implementation
 
@@ -72,7 +81,7 @@ The system includes a `SewidanFakeGateway` as an example implementation:
 ## API Documentation
 The Postman collection documents all available endpoints, including:
 - **Authentication** (register, login, refresh token, logout)
-- **Order management** (create, update, delete, list)
+- **Order management** (create, delete, list)
 - **Payment processing**
 - **Product listing**
 
